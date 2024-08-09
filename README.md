@@ -1,15 +1,48 @@
-SparkFun Qwiic Scale NAU7802 Library
+Arduino NAU7802 2CH Library
 ===========================================================
 
- [![SparkFun Qwiic Scale - NAU7802 (SEN-15242)](https://cdn.sparkfun.com/assets/parts/1/3/7/0/0/Scale_Converted_to_Digital_-_SparkFun_Qwiic_Scale.jpg)](https://www.sparkfun.com/products/15242) 
+Forked from the [SparkFun Qwiic Scale NAU7802 Library](https://github.com/sparkfun/SparkFun_Qwiic_Scale_NAU7802_Arduino_Library).
 
-[*SparkFun Qwiic Scale - NAU7802 (SEN-15242)*](https://www.sparkfun.com/products/15242)
+*Disclaimer: This fork was made relatively quickly and may contain bugs.*
 
-The SparkFun Qwiic Scale - NAU7802 is a small breakout board for the NAU7802 that allows you to easily read load cells to measure weight. By connecting the amplifier to your microcontroller you will be able to read the changes in the resistance of the load cell, and with some calibration you'll be able to get very accurate weight measurements. This can be handy for creating your own industrial scale, process control or simple presence detection.
+<img src="nau7802.jpg" width=350px>
 
-Connect a load cell and the Qwiic Scale translates the data into something your microcontroller can read. The NAU7802 is an ADC with built in gain and I<sup>2</sup>C output to amplify and convert the readings from a standard load cell. A load cell is basically a device that translates pressure or force into electrical signals. In most cases this signal is very small and needs to be amplified. There are many popular chips that read the change and amplify it, but the NAU7802 goes one step further and converts everything to a true I<sup>2</sup>C output.  
+The NAU7802 is a 2-channel, 24-bit ADC interfaced via I2C.
 
-The board provides 4 spring terminals to connect your load cell with no soldering required. Additionally, the Qwiic connectors provide an easy interface to connect this board to your microcontroller again with no soldering required. In addition to the I<sup>2</sup>C pins, the board also breaks out an interrupt pin, AVDD to the edge of the board. The differential input signals (plus a second set of input signals) are broken out to the middle of the board as well.
+This chip has gained notoriety as a load cell amplifier for use in custom scales or other sensitive measurement tasks. While this chip works perfectly well in these projects, it is equally capable of functioning as a general-purpose ADC for more basic applications (such as measuring a battery voltage or other internal analog circuits). It appears that most existing libraries overlook this fact and primarily treat it as a load cell amplifier, rather than a general-purpose ADC. Most breakout boards for the NAU7802 (like the [SparkFun](https://www.sparkfun.com/products/15242) or [Adafruit](https://www.adafruit.com/product/4538) variants) don't event expose the second channel, and are explicitly designed as load cell amplifiers. The most annoying consequence of this is that the 2nd channel is almost impossible to use, as it is often sacrificed for improving the stability of the PGA for use on the 1st channel.
+
+This fork was created to provide a small and straightforward library for using the NAU7802 in non scale-related tasks. The changes are as follows:
+
+- Removed the forced requirement of a filter cap on CH2, thus allowing CH2 to function
+	- See function `setPGACapEnable()`
+	- See Section 9.4 in datasheet
+- Added function to disable (bypass) the PGA
+	- See function `setBypassPGA()`
+	- See Section 9.3 in datasheet
+- Added function to disable the LDO & use external AVDD pin
+	- Call function `setLDO(NAU7802_LDO_EXTERNAL)`
+	- See Section 8.2 in datasheet
+	- Inspired by [RocketEDA's Fork](https://github.com/RocketEDA/NAU7802_Arduino_externalRef)
+- Added function to change LDO mode (defaults to 0)
+	- See function `setLDOMode()`, param `NAU7802_LDOMODE_0` or `NAU7802_LDOMODE_1`
+	- See Table 11.14 in datasheet
+- Tweaked default initialization settings
+	- Sampling: 10Hz
+	- PGA Gain: 1x
+	- PGA Cap Enable: False
+- Removed all scale-specific functions
+- Removed existing example sketches (most no longer work)
+
+
+*A small note for anyone looking into using the NAU7802 as a general ADC: if you are only measuring positive voltages relative to ground (the use-case for most internal ADC peripherals in microcontrollers, such as the ATMEL 328p or STM32F103), then your full-scale voltage will only be HALF of your VREF. For the simplest case with REFN=0.0V & REFP=3.3V and VIN1N=0.0V, this means your measurement range for VIN1P is only from 0V to 1.65V(!). This also means you only use 12 of the 24 bits of resolution. See 8.1 and 9.2 in the datasheet for more info.*
+
+### Future Ideas
+- Add functions to toggle the internal weak & strong I2C pullups
+- Add functionality to read the NAU7802's internal temperature sensor
+
+
+SparkFun Attribution
+-------------------
 
 SparkFun labored with love to create this code. Feel like supporting open source hardware? 
 Buy a [board](https://www.sparkfun.com/products/15242) from SparkFun!
@@ -17,20 +50,6 @@ Buy a [board](https://www.sparkfun.com/products/15242) from SparkFun!
 Thanks to:
 
 * gamix25 for fixing [signed bit error](https://github.com/sparkfun/SparkFun_Qwiic_Scale_NAU7802_Arduino_Library/pull/1)
-
-Repository Contents
--------------------
-
-* **/examples** - Example sketches for the library (.ino). Run these from the Arduino IDE. 
-* **/src** - Source files for the library (.cpp, .h).
-* **keywords.txt** - Keywords from this library that will be highlighted in the Arduino IDE. 
-* **library.properties** - General library properties for the Arduino package manager. 
-
-Documentation
---------------
-
-* **[Installing an Arduino Library Guide](https://learn.sparkfun.com/tutorials/installing-an-arduino-library)** - Basic information on how to install an Arduino library.
-* **[Product Repository](https://github.com/sparkfun/Qwiic_Scale)** - Main repository (including hardware files)
 
 License Information
 -------------------
