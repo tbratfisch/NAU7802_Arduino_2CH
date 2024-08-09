@@ -174,8 +174,9 @@ class NAU7802
 public:
   NAU7802();                                               //Default constructor
   bool begin(TwoWire &wirePort = Wire, bool reset = true); //Check communication and initialize sensor
+  bool pgaCapEnable(bool state = false);                  //Returns true if state change was successful
+  
   bool isConnected();                                      //Returns true if device acks at the I2C address
-
   bool available();                          //Returns true if Cycle Ready bit is set (conversion is complete)
   int32_t getReading();                      //Returns 24-bit reading. Assumes CR Cycle Ready bit (ADC conversion complete) has been checked by .available()
   int32_t getAverage(uint8_t samplesToTake, unsigned long timeout_ms = 1000); //Return the average of a given number of readings

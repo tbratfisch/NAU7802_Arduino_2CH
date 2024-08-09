@@ -63,7 +63,7 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
     adc |= 0x30;
     result &= setRegister(NAU7802_ADC, adc);
 
-    result &= setBit(NAU7802_PGA_PWR_PGA_CAP_EN, NAU7802_PGA_PWR); //Enable 330pF decoupling cap on chan 2. From 9.14 application circuit note.
+    result &= pgaCapEnable(false); //Ensure PGA capacitor setting is disabled
 
     result &= clearBit(NAU7802_PGA_LDOMODE, NAU7802_PGA); //Ensure LDOMODE bit is clear - improved accuracy and higher DC gain, with ESR < 1 ohm
 
@@ -76,6 +76,22 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
 
   return (result);
 }
+
+
+// Sets if CH2 should be used for a 330pf decoupling cap
+// to improve PGA performance while sacrificing the 2nd
+// channel. See section 9.14 in datasheet.
+bool NAU7802::pgaCapEnable(bool state)
+{
+  if (state) {
+    // Enable cap, sacrifice CH2
+    return setBit(NAU7802_PGA_PWR_PGA_CAP_EN, NAU7802_PGA_PWR);
+  } else {
+    // Disable cap, CH2 becomes usable
+    return clearBit(NAU7802_PGA_PWR_PGA_CAP_EN, NAU7802_PGA_PWR);
+  }//if
+}//pgaCapEnable()
+
 
 //Returns true if device is present
 //Tests for device ack to I2C address
