@@ -174,6 +174,7 @@ class NAU7802
 public:
   NAU7802();                                               //Default constructor
   bool begin(TwoWire &wirePort = Wire, bool reset = true); //Check communication and initialize sensor
+  
   bool setPGACapEnable(bool state = false);                  //Returns true if state change was successful
   bool setBypassPGA(bool state = false);                   //Returns true if state change was successful
 
@@ -181,17 +182,7 @@ public:
   bool available();                          //Returns true if Cycle Ready bit is set (conversion is complete)
   int32_t getReading();                      //Returns 24-bit reading. Assumes CR Cycle Ready bit (ADC conversion complete) has been checked by .available()
   int32_t getAverage(uint8_t samplesToTake, unsigned long timeout_ms = 1000); //Return the average of a given number of readings
-
-  void calculateZeroOffset(uint8_t averageAmount = 8, unsigned long timeout_ms = 1000); //Also called taring. Call this with nothing on the scale
-  void setZeroOffset(int32_t newZeroOffset);           //Sets the internal variable. Useful for users who are loading values from NVM.
-  int32_t getZeroOffset();                             //Ask library for this value. Useful for storing value into NVM.
-
-  void calculateCalibrationFactor(float weightOnScale, uint8_t averageAmount = 8, unsigned long timeout_ms = 1000); //Call this with the value of the thing on the scale. Sets the calibration factor based on the weight on scale and zero offset.
-  void setCalibrationFactor(float calFactor);                                      //Pass a known calibration factor into library. Helpful if users is loading settings from NVM.
-  float getCalibrationFactor();                                                    //Ask library for this value. Useful for storing value into NVM.
-
-  float getWeight(bool allowNegativeWeights = false, uint8_t samplesToTake = 8, unsigned long timeout_ms = 1000); //Once you've set zero offset and cal factor, you can ask the library to do the calculations for you.
-
+  
   bool setGain(uint8_t gainValue);        //Set the gain. x1, 2, 4, 8, 16, 32, 64, 128 are available
   bool setLDO(uint8_t ldoValue);          //Set the onboard Low-Drop-Out voltage regulator to a given value. 2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.2, 4.5V are avaialable
   void setLDORampDelay(unsigned long delay); //LDO (AVDD) takes ~200ms to ramp up. During .begin, delay for _ldoRampDelay before performing calibrateAFE
@@ -234,10 +225,6 @@ public:
 private:
   TwoWire *_i2cPort;                   //This stores the user's requested i2c port
   const uint8_t _deviceAddress = 0x2A; //Default unshifted 7-bit address of the NAU7802
-
-  //y = mx+b
-  int32_t _zeroOffset = 0;        //This is b
-  float _calibrationFactor = 1.0; //This is m. User provides this number so that we can output y when requested
 
   unsigned long _ldoRampDelay = 250; //During begin, wait this many millis after configuring the LDO before performing calibrateAFE
 };

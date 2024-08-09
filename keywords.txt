@@ -18,15 +18,8 @@ available	KEYWORD2
 getReading	KEYWORD2
 getAverage	KEYWORD2
 
-calculateZeroOffset	KEYWORD2
-setZeroOffset	KEYWORD2
-getZeroOffset	KEYWORD2
-
-calculateCalibrationFactor	KEYWORD2
-setCalibrationFactor	KEYWORD2
-getCalibrationFactor	KEYWORD2
-
-getWeight	KEYWORD2
+setPGACapEnable KEYWORD2
+setBypassPGA KEYWORD2
 
 setGain	KEYWORD2
 setLDO	KEYWORD2

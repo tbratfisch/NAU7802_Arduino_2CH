@@ -325,60 +325,6 @@ int32_t NAU7802::getAverage(uint8_t averageAmount, unsigned long timeout_ms)
   return (total);
 }
 
-//Call when scale is setup, level, at running temperature, with nothing on it
-void NAU7802::calculateZeroOffset(uint8_t averageAmount, unsigned long timeout_ms)
-{
-  setZeroOffset(getAverage(averageAmount, timeout_ms));
-}
-
-//Sets the internal variable. Useful for users who are loading values from NVM.
-void NAU7802::setZeroOffset(int32_t newZeroOffset)
-{
-  _zeroOffset = newZeroOffset;
-}
-
-int32_t NAU7802::getZeroOffset()
-{
-  return (_zeroOffset);
-}
-
-//Call after zeroing. Provide the float weight sitting on scale. Units do not matter.
-void NAU7802::calculateCalibrationFactor(float weightOnScale, uint8_t averageAmount, unsigned long timeout_ms)
-{
-  int32_t onScale = getAverage(averageAmount, timeout_ms);
-  float newCalFactor = ((float)(onScale - _zeroOffset)) / weightOnScale;
-  setCalibrationFactor(newCalFactor);
-}
-
-//Pass a known calibration factor into library. Helpful if users is loading settings from NVM.
-//If you don't know your cal factor, call setZeroOffset(), then calculateCalibrationFactor() with a known weight
-void NAU7802::setCalibrationFactor(float newCalFactor)
-{
-  _calibrationFactor = newCalFactor;
-}
-
-float NAU7802::getCalibrationFactor()
-{
-  return (_calibrationFactor);
-}
-
-//Returns the y of y = mx + b using the current weight on scale, the cal factor, and the offset.
-float NAU7802::getWeight(bool allowNegativeWeights, uint8_t samplesToTake, unsigned long timeout_ms)
-{
-  int32_t onScale = getAverage(samplesToTake, timeout_ms);
-
-  //Prevent the current reading from being less than zero offset
-  //This happens when the scale is zero'd, unloaded, and the load cell reports a value slightly less than zero value
-  //causing the weight to be negative or jump to millions of pounds
-  if (allowNegativeWeights == false)
-  {
-    if (onScale < _zeroOffset)
-      onScale = _zeroOffset; //Force reading to zero
-  }
-
-  float weight = ((float)(onScale - _zeroOffset)) / _calibrationFactor;
-  return (weight);
-}
 
 //Set Int pin to be high when data is ready (default)
 bool NAU7802::setIntPolarityHigh()
