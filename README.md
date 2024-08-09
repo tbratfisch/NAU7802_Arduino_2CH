@@ -35,7 +35,7 @@ This fork was created to provide a small and straightforward library for using t
 - Added two basic example sketches outlining usage
 
 
-*A small note for anyone looking into using the NAU7802 as a general ADC: if you are only measuring positive voltages relative to ground (the use-case for most internal ADC peripherals in microcontrollers, such as the ATMEL 328p or STM32F103), then your full-scale voltage will only be HALF of your VREF. For the simplest case with REFN=0.0V & REFP=3.3V and VIN1N=0.0V, this means your measurement range for VIN1P is only from 0V to 1.65V(!). This also means you only use 12 of the 24 bits of resolution. See 8.1 and 9.2 in the datasheet for more info.*
+*A small note for anyone looking into using the NAU7802 as a general ADC: if you are only measuring positive voltages relative to ground (the use-case for most internal ADC peripherals in microcontrollers, such as the ATMEL 328p or STM32F103), then your full-scale voltage will only be HALF of your VREF. For the simplest case with REFN=0.0V & REFP=3.3V and VIN1N=0.0V, this means your measurement range for VIN1P is only from 0V to 1.65V(!). This also means you only use half of the available resolution (effectively making it a 23-bit ADC). See 8.1 and 9.2 in the datasheet for more info.*
 
 ### Future Ideas
 - Add functions to toggle the internal weak & strong I2C pullups
