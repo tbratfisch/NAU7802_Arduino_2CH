@@ -67,7 +67,7 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
     
     result &= setBypassPGA(false); //Ensure the PGA is enabled
 
-    result &= clearBit(NAU7802_PGA_LDOMODE, NAU7802_PGA); //Ensure LDOMODE bit is clear - improved accuracy and higher DC gain, with ESR < 1 ohm
+    result &= setLDOMode(NAU7802_LDOMODE_0); //Ensure LDOMODE is 0 (improved accuracy & higher DC gain)
 
     delay(_ldoRampDelay); //Wait for LDO to stabilize - takes about 200ms
 
@@ -108,6 +108,22 @@ bool NAU7802::setBypassPGA(bool state)
     return clearBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);
   }//if
 }//setBypassPGA()
+
+
+// Sets the LDO mode.
+// Accepts NAU7802_LDOMODE_0 or NAU7802_LDOMODE_1
+bool NAU7802::setLDOMode(uint8_t ldoMode)
+{
+
+  if (ldoMode == NAU7802_LDOMODE_0) {
+    // LDOMODE = 0 (Improved accuracy & higher DC gain with ESR<1)
+    return (clearBit(NAU7802_PGA_LDOMODE, NAU7802_PGA));
+  } else {
+    // LODMODE = 1 (Improved stability & lower DC gain with ESR<5)
+    return (setBit(NAU7802_PGA_LDOMODE, NAU7802_PGA));
+  }//if
+
+}//setLDOMode()
 
 
 //Returns true if device is present

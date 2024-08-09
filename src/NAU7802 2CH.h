@@ -124,6 +124,13 @@ typedef enum
   NAU7802_LDO_4V5 = 0b000,
 } NAU7802_LDO_Values;
 
+//Allowed LDO modes
+typedef enum
+{
+  NAU7802_LDOMODE_0 = 0,
+  NAU7802_LDOMODE_1 = 1,
+} NAU7802_LDO_Modes;
+
 //Allowed gains
 typedef enum
 {
@@ -176,8 +183,9 @@ public:
   NAU7802();                                               //Default constructor
   bool begin(TwoWire &wirePort = Wire, bool reset = true); //Check communication and initialize sensor
   
-  bool setPGACapEnable(bool state = false);                  //Returns true if state change was successful
-  bool setBypassPGA(bool state = false);                   //Returns true if state change was successful
+  bool setPGACapEnable(bool state = false);                 //Returns true if state change was successful
+  bool setBypassPGA(bool state = false);                    //Returns true if state change was successful
+  bool setLDOMode(uint8_t ldoMode = NAU7802_LDOMODE_0);     //Returns true if state change was successful
 
   bool isConnected();                                      //Returns true if device acks at the I2C address
   bool available();                          //Returns true if Cycle Ready bit is set (conversion is complete)
