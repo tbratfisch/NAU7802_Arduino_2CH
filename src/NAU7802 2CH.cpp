@@ -54,9 +54,9 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
 
     result &= setLDO(NAU7802_LDO_3V3); //Set LDO to 3.3V
 
-    result &= setGain(NAU7802_GAIN_128); //Set gain to 128
+    result &= setGain(NAU7802_GAIN_1); //Set gain to 1
 
-    result &= setSampleRate(NAU7802_SPS_80); //Set samples per second to 10
+    result &= setSampleRate(NAU7802_SPS_10); //Set samples per second to 10
 
     //Turn off CLK_CHP. From 9.1 power on sequencing.
     uint8_t adc = getRegister(NAU7802_ADC);
@@ -71,7 +71,7 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
 
     delay(_ldoRampDelay); //Wait for LDO to stabilize - takes about 200ms
 
-    getWeight(true, 10); //Flush
+    getAverage(10, 1000); //Flush
 
     result &= calibrateAFE(); //Re-cal analog front end when we change gain, sample rate, or channel
   }
