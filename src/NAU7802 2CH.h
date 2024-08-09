@@ -113,6 +113,7 @@ typedef enum
 //Allowed Low drop out regulator voltages
 typedef enum
 {
+  NAU7802_LDO_EXTERNAL = 0b1000;
   NAU7802_LDO_2V4 = 0b111,
   NAU7802_LDO_2V7 = 0b110,
   NAU7802_LDO_3V0 = 0b101,

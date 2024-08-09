@@ -248,11 +248,14 @@ bool NAU7802::reset()
 }
 
 //Set the onboard Low-Drop-Out voltage regulator to a given value
-//2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.2, 4.5V are available
+//EXTERNAL, 2.4, 2.7, 3.0, 3.3, 3.6, 3.9, 4.2, 4.5V are available
+// Using "NAU7802_LDO_EXTERNAL" will disable the LDO.
 bool NAU7802::setLDO(uint8_t ldoValue)
 {
-  if (ldoValue > 0b111)
-    ldoValue = 0b111; //Error check
+  if (ldoValue > 0b111) {
+    // Disable internal LDO & use external AVDD pin input
+    return (clearBit(NAU7802_PU_CTRL_AVDDS, NAU7802_PU_CTRL));
+  }//if
 
   //Set the value of the LDO
   uint8_t value = getRegister(NAU7802_CTRL1);
