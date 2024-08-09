@@ -95,10 +95,10 @@ typedef enum
 {
   NAU7802_PGA_CHP_DIS = 0,
   NAU7802_PGA_INV = 3,
-  NAU7802_PGA_BYPASS_EN,
-  NAU7802_PGA_OUT_EN,
-  NAU7802_PGA_LDOMODE,
-  NAU7802_PGA_RD_OTP_SEL,
+  NAU7802_PGA_BYPASS_EN = 4,
+  NAU7802_PGA_OUT_EN = 5,
+  NAU7802_PGA_LDOMODE = 6,
+  NAU7802_PGA_RD_OTP_SEL = 7,
 } PGA_Bits;
 
 //Bits within the PGA PWR register
@@ -174,8 +174,9 @@ class NAU7802
 public:
   NAU7802();                                               //Default constructor
   bool begin(TwoWire &wirePort = Wire, bool reset = true); //Check communication and initialize sensor
-  bool pgaCapEnable(bool state = false);                  //Returns true if state change was successful
-  
+  bool setPGACapEnable(bool state = false);                  //Returns true if state change was successful
+  bool setBypassPGA(bool state = false);                   //Returns true if state change was successful
+
   bool isConnected();                                      //Returns true if device acks at the I2C address
   bool available();                          //Returns true if Cycle Ready bit is set (conversion is complete)
   int32_t getReading();                      //Returns 24-bit reading. Assumes CR Cycle Ready bit (ADC conversion complete) has been checked by .available()

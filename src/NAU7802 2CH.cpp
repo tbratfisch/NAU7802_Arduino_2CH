@@ -63,7 +63,9 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
     adc |= 0x30;
     result &= setRegister(NAU7802_ADC, adc);
 
-    result &= pgaCapEnable(false); //Ensure PGA capacitor setting is disabled
+    result &= setPGACapEnable(false); //Ensure PGA capacitor setting is disabled
+    
+    result &= setBypassPGA(false); //Ensure the PGA is enabled
 
     result &= clearBit(NAU7802_PGA_LDOMODE, NAU7802_PGA); //Ensure LDOMODE bit is clear - improved accuracy and higher DC gain, with ESR < 1 ohm
 
@@ -81,7 +83,7 @@ bool NAU7802::begin(TwoWire &wirePort, bool initialize)
 // Sets if CH2 should be used for a 330pf decoupling cap
 // to improve PGA performance while sacrificing the 2nd
 // channel. See section 9.14 in datasheet.
-bool NAU7802::pgaCapEnable(bool state)
+bool NAU7802::setPGACapEnable(bool state)
 {
   if (state) {
     // Enable cap, sacrifice CH2
@@ -90,7 +92,22 @@ bool NAU7802::pgaCapEnable(bool state)
     // Disable cap, CH2 becomes usable
     return clearBit(NAU7802_PGA_PWR_PGA_CAP_EN, NAU7802_PGA_PWR);
   }//if
-}//pgaCapEnable()
+}//setPGACapEnable()
+
+
+// Enables or disables the PGA bypass setting.
+// If your input(s) already span the full-scale
+// voltage of the NAU7805, you can bypass the PGA
+bool NAU7802::setBypassPGA(bool state)
+{
+  if (state) {
+    // Enable PGA bypass
+    return setBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);
+  } else {
+    // Disable PGA bypass (default)
+    return clearBit(NAU7802_PGA_BYPASS_EN, NAU7802_PGA);
+  }//if
+}//setBypassPGA()
 
 
 //Returns true if device is present
