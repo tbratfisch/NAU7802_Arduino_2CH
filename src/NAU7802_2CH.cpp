@@ -220,7 +220,7 @@ bool NAU7802::setSampleRate(uint8_t rate)
   return (setRegister(NAU7802_CTRL2, value));
 }
 
-//Select between 1 and 3
+//Select between 0 and 2
 bool NAU7802::setChannel(uint8_t channelNumber)
 {
   switch (channelNumber) {

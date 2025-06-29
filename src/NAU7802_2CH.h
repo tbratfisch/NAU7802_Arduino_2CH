@@ -211,7 +211,7 @@ public:
   void setLDORampDelay(unsigned long delay); //LDO (AVDD) takes ~200ms to ramp up. During .begin, delay for _ldoRampDelay before performing calibrateAFE
   unsigned long getLDORampDelay();
   bool setSampleRate(uint8_t rate);       //Set the readings per second. 10, 20, 40, 80, and 320 samples per second is available
-  bool setChannel(uint8_t channelNumber); //Select between 1 and 3
+  bool setChannel(uint8_t channelNumber); //Select between 0 and 2
 
   bool calibrateAFE(NAU7802_Cal_Mode mode = NAU7802_CALMOD_INTERNAL);      //Synchronous calibration of the analog front end of the NAU7802. Returns true if CAL_ERR bit is 0 (no error)
   void beginCalibrateAFE(NAU7802_Cal_Mode mode = NAU7802_CALMOD_INTERNAL); //Begin asynchronous calibration of the analog front end of the NAU7802. Poll for completion with calAFEStatus() or wait with waitForCalibrateAFE().
